@@ -175,3 +175,10 @@ class AccessTokenExchangeView(_DispatchingView):
     """
     dop_view = auth_exchange_views.DOPAccessTokenExchangeView
     dot_view = auth_exchange_views.DOTAccessTokenExchangeView
+
+
+class RevokeTokenView(_DispatchingView):
+    """
+    Dispatch to the RevokeTokenView of django-oauth-toolkit
+    """
+    dot_view = dot_views.RevokeTokenView
