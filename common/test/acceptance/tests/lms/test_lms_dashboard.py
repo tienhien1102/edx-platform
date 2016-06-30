@@ -233,8 +233,6 @@ class LmsDashboardA11yTest(BaseLmsDashboardTest):
         course_listings = self.dashboard_page.get_course_listings()
         self.assertEqual(len(course_listings), 1)
         self.dashboard_page.a11y_audit.config.set_rules({
-            "ignore": [
-                'section',  # TODO: AC-491
-            ]
+            "ignore": []
         })
         self.dashboard_page.a11y_audit.check_for_accessibility_errors()
