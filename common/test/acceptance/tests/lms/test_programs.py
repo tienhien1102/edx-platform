@@ -124,9 +124,7 @@ class ProgramListingPageA11yTest(ProgramPageBase):
         self.assertFalse(self.listing_page.are_cards_present)
 
         self.listing_page.a11y_audit.config.set_rules({
-            "ignore": [
-                'section',  # TODO: AC-491
-            ]
+            "ignore": []
         })
         self.listing_page.a11y_audit.check_for_accessibility_errors()
 
@@ -139,9 +137,7 @@ class ProgramListingPageA11yTest(ProgramPageBase):
         self.assertTrue(self.listing_page.are_cards_present)
 
         self.listing_page.a11y_audit.config.set_rules({
-            "ignore": [
-                'section',  # TODO: AC-491
-            ]
+            "ignore": []
         })
         self.listing_page.a11y_audit.check_for_accessibility_errors()
 
@@ -163,8 +159,6 @@ class ProgramDetailsPageA11yTest(ProgramPageBase):
         self.details_page.visit()
 
         self.details_page.a11y_audit.config.set_rules({
-            "ignore": [
-                'section',  # TODO: AC-491
-            ]
+            "ignore": []
         })
         self.details_page.a11y_audit.check_for_accessibility_errors()
