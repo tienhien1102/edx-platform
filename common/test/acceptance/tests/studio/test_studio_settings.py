@@ -503,7 +503,6 @@ class StudioSettingsA11yTest(StudioCourseTest):
         # we will ignore this error in the test until we fix them.
         self.settings_page.a11y_audit.config.set_rules({
             "ignore": [
-                'section',  # TODO: AC-491
                 'color-contrast',  # TODO: AC-225
                 'link-href',  # TODO: AC-226
                 'nav-aria-label',  # TODO: AC-227
