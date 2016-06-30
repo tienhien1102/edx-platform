@@ -1310,7 +1310,8 @@ class ProgressPageTests(ModuleStoreTestCase):
         )
         self.assertNotContains(resp, u"View Your Certificate")
         self.assertNotContains(resp, u"You can now view your certificate")
-        self.assertContains(resp, u"We're creating your certificate.")
+        self.assertIn("working on it...", resp.content)
+        self.assertIn("creating your certificate", resp.content)
 
     @patch.dict('django.conf.settings.FEATURES', {'CERTIFICATES_HTML_VIEW': False})
     @patch('courseware.grades.grade', Mock(return_value={'grade': 'Pass', 'percent': 0.75, 'section_breakdown': [],
@@ -1446,6 +1447,8 @@ class ProgressPageTests(ModuleStoreTestCase):
         self.assertContains(resp, u'Download Your Certificate')
         self.assert_invalidate_certificate(generated_certificate)
 
+    @patch('courseware.grades.grade', Mock(return_value={'grade': 'Pass', 'percent': 0.75, 'section_breakdown': [],
+                                                         'grade_breakdown': []}))
     def test_message_for_audit_mode(self):
         """ Verify that message appears on progress page, if learner is enrolled
          in audit mode.
@@ -1474,7 +1477,7 @@ class ProgressPageTests(ModuleStoreTestCase):
             reverse('progress', args=[unicode(self.course.id)])
         )
         self.assertNotContains(resp, u'Request Certificate')
-        self.assertContains(resp, u'Your certificate has been invalidated.')
+        self.assertContains(resp, u'Your certificate has been invalidated')
         self.assertContains(resp, u'Please contact your course team if you have any questions.')
         self.assertNotContains(resp, u'View Your Certificate')
         self.assertNotContains(resp, u'Download Your Certificate')
