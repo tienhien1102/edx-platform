@@ -649,9 +649,7 @@ class CoursewareMultipleVerticalsTest(UniqueCourseTest, EventsTestMixin):
         self.courseware_page.a11y_audit.config.set_scope(
             include=['div.sequence-nav'])
         self.courseware_page.a11y_audit.config.set_rules({
-            "ignore": [
-                'section',  # TODO: AC-491
-            ],
+            "ignore": [],
         })
         self.courseware_page.a11y_audit.check_for_accessibility_errors()
 
