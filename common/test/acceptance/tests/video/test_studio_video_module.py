@@ -359,8 +359,6 @@ class CMSVideoA11yTest(CMSVideoBaseTest):
             include=["div.video"]
         )
         self.outline.a11y_audit.config.set_rules({
-            "ignore": [
-                'section',  # TODO: AC-491
-            ]
+            "ignore": []
         })
         self.outline.a11y_audit.check_for_accessibility_errors()
