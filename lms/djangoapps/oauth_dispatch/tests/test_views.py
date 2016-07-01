@@ -325,39 +325,61 @@ class TestRevokeTokenView(_DispatchingViewTestCase):  # pylint: disable=abstract
     Test class for RevokeTokenView
     """
 
-    def access_token_post_body(self, user, client):
+    def setUp(self):
+        super(TestRevokeTokenView, self).setUp()
+        self.login_url = reverse("login_with_access_token")
+        self.revoke_token_url = reverse('revoke_token')
+
+        response = self.client.post(reverse('access_token'), self.access_token_post_body())
+        access_token_data = json.loads(response.content)
+        self.access_token = access_token_data['access_token']
+        self.refresh_token = access_token_data['refresh_token']
+
+    def access_token_post_body(self):
         """
         Returns a dictionary to be used as the body of the access_token POST request
         """
         return {
-            'client_id': client.client_id,
+            'client_id': self.dot_app.client_id,
             'grant_type': 'password',
-            'username': user.username,
+            'username': self.user.username,
             'password': 'test',
         }
 
-    def revoke_token_post_body(self, client, token):
+    def login_with_access_token(self):
+        """
+        Login with access token and return response
+        """
+        return self.client.post(self.login_url, HTTP_AUTHORIZATION="Bearer {0}".format(self.access_token))
+
+    def revoke_token_post_body(self, token):
         """
         Returns a dictionary to be used as the body of the revoke_token POST request
         """
         return {
-            'client_id': client.client_id,
-            'client_secret': client.client_secret,
+            'client_id': self.dot_app.client_id,
+            'client_secret': self.dot_app.client_secret,
             'token': token,
         }
 
-    def test_revoke_token_view_dot(self):
+    def test_revoke_refresh_token_dot(self):
         """
         Tests invalidation/revoke of user tokens against refresh token for django-oauth-toolkit
         """
-        access_token_url = reverse('access_token')
-        response = self.client.post(access_token_url, self.access_token_post_body(self.user, self.dot_app))
-        self.assertEqual(response.status_code, 200)
-        access_token_data = json.loads(response.content)
+        self.assertEqual(self.login_with_access_token().status_code, 204)
 
-        revoke_token_url = reverse('revoke_token')
-        response = self.client.post(
-            revoke_token_url,
-            self.revoke_token_post_body(self.dot_app, access_token_data['refresh_token']),
-        )
+        response = self.client.post(self.revoke_token_url, self.revoke_token_post_body(self.refresh_token))
         self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(self.login_with_access_token().status_code, 401)
+
+    def test_revoke_access_token_dot(self):
+        """
+        Tests invalidation/revoke of user access token for django-oauth-toolkit
+        """
+        self.assertEqual(self.login_with_access_token().status_code, 204)
+
+        response = self.client.post(self.revoke_token_url, self.revoke_token_post_body(self.access_token))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(self.login_with_access_token().status_code, 401)
