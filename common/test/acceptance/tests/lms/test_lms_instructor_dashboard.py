@@ -1055,7 +1055,6 @@ class CertificatesTest(BaseInstructorDashboardTest):
                 'checkboxgroup',  # TODO: AC-491
                 'color-contrast',  # TODO: AC-491
                 'duplicate-id',  # TODO: AC-491
-                'label',  # TODO: AC-491
                 'radiogroup',  # TODO: AC-491
             ]
         })
@@ -1275,7 +1274,6 @@ class CertificateInvalidationTest(BaseInstructorDashboardTest):
                 'checkboxgroup',  # TODO: AC-491
                 'color-contrast',  # TODO: AC-491
                 'duplicate-id',  # TODO: AC-491
-                'label',  # TODO: AC-491
                 'radiogroup',  # TODO: AC-491
             ]
         })
