@@ -325,32 +325,34 @@ class TestRevokeTokenView(_DispatchingViewTestCase):  # pylint: disable=abstract
     Test class for RevokeTokenView
     """
 
+    login_with_access_token_url = reverse("login_with_access_token")
+    revoke_token_url = reverse('revoke_token')
+    access_token_url = reverse('access_token')
+
     def setUp(self):
         super(TestRevokeTokenView, self).setUp()
-        self.login_url = reverse("login_with_access_token")
-        self.revoke_token_url = reverse('revoke_token')
-
-        response = self.client.post(reverse('access_token'), self.access_token_post_body())
+        response = self.client.post(self.access_token_url, self.access_token_post_body())
         access_token_data = json.loads(response.content)
         self.access_token = access_token_data['access_token']
         self.refresh_token = access_token_data['refresh_token']
 
-    def access_token_post_body(self):
+    def access_token_post_body(self, refresh_token=None):
         """
         Returns a dictionary to be used as the body of the access_token POST request
         """
-        return {
-            'client_id': self.dot_app.client_id,
-            'grant_type': 'password',
-            'username': self.user.username,
-            'password': 'test',
-        }
-
-    def login_with_access_token(self):
-        """
-        Login with access token and return response
-        """
-        return self.client.post(self.login_url, HTTP_AUTHORIZATION="Bearer {0}".format(self.access_token))
+        if refresh_token:
+            return {
+                'client_id': self.dot_app.client_id,
+                'grant_type': 'refresh_token',
+                'refresh_token': refresh_token,
+            }
+        else:
+            return {
+                'client_id': self.dot_app.client_id,
+                'grant_type': 'password',
+                'username': self.user.username,
+                'password': 'test',
+            }
 
     def revoke_token_post_body(self, token):
         """
@@ -358,28 +360,39 @@ class TestRevokeTokenView(_DispatchingViewTestCase):  # pylint: disable=abstract
         """
         return {
             'client_id': self.dot_app.client_id,
-            'client_secret': self.dot_app.client_secret,
             'token': token,
         }
+
+    def login_with_access_token(self):
+        """
+        Login with access token and return response
+        """
+        return self.client.post(
+            self.login_with_access_token_url,
+            HTTP_AUTHORIZATION="Bearer {0}".format(self.access_token)
+        )
+
+    def verify_revoke_token(self, token):
+        """
+        Verifies access of token before and after revoking
+        """
+        self.assertEqual(self.login_with_access_token().status_code, 204)
+
+        response = self.client.post(self.revoke_token_url, self.revoke_token_post_body(token))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(self.login_with_access_token().status_code, 401)
+        response = self.client.post(self.access_token_url, self.access_token_post_body(self.refresh_token))
+        self.assertEqual(response.status_code, 401)
 
     def test_revoke_refresh_token_dot(self):
         """
         Tests invalidation/revoke of user tokens against refresh token for django-oauth-toolkit
         """
-        self.assertEqual(self.login_with_access_token().status_code, 204)
-
-        response = self.client.post(self.revoke_token_url, self.revoke_token_post_body(self.refresh_token))
-        self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(self.login_with_access_token().status_code, 401)
+        self.verify_revoke_token(self.refresh_token)
 
     def test_revoke_access_token_dot(self):
         """
         Tests invalidation/revoke of user access token for django-oauth-toolkit
         """
-        self.assertEqual(self.login_with_access_token().status_code, 204)
-
-        response = self.client.post(self.revoke_token_url, self.revoke_token_post_body(self.access_token))
-        self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(self.login_with_access_token().status_code, 401)
+        self.verify_revoke_token(self.access_token)
