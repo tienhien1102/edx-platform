@@ -594,8 +594,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
         templateName: 'visibility-editor',
         className: 'edit-visibility',
         modelVisibility: function() {
-            return null;
-            // TODO: write real logic here
+            return this.model.get('visibility');
         },
 
         isAncestorLocked: function() {
@@ -620,17 +619,20 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
         },
 
         getRequestData: function() {
-            return this.hasChanges() ? {
-                publish: 'republish',
-                metadata: {
-                    visiblility_level: this.getVisibility()
+            if (this.hasChanges()) {
+                return {
+                    publish: 'republish',
+                    metadata: {
+                        visiblility_level: this.getVisibility()
                     }
-                } : {};
+                };
+            }
+            return {};
         },
 
         getContext: function () {
             return {
-                hasExplicitStaffLock: this.modelVisibility,
+                visibility: this.modelVisibility(),
                 ancestorLocked: this.isAncestorLocked()
             };
         }
