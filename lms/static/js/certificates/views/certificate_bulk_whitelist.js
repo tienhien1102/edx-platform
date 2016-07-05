@@ -31,7 +31,7 @@
             return Backbone.View.extend({
                 el: DOM_SELECTORS.bulk_exception,
                 events: {
-                    'change #browseBtn': 'chooseFile',
+                    'change #browseBtn-bulk-exc-students': 'chooseFile',
                     'click .upload-csv-button': 'uploadCSV',
                     'click a.arrow': 'toggleMessageDetails'
                 },
