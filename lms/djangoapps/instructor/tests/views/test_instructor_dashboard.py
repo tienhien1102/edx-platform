@@ -149,10 +149,10 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase, XssT
 
         # enrollment information visible
         self.assertIn('<h3 class="hd hd-3">Enrollment Information</h3>', response.content)
-        self.assertIn('<th scope="row">Verified</th scope="row">', response.content)
-        self.assertIn('<th scope="row">Audit</th scope="row">', response.content)
-        self.assertIn('<th scope="row">Honor</th scope="row">', response.content)
-        self.assertIn('<th scope="row">Professional</th scope="row">', response.content)
+        self.assertIn('<th scope="row">Verified></th>', response.content)
+        self.assertIn('<th scope="row">Audit></th>', response.content)
+        self.assertIn('<th scope="row">Honor></th>', response.content)
+        self.assertIn('<th scope="row">Professional></th>', response.content)
 
         # dashboard link hidden
         self.assertFalse(self.get_dashboard_enrollment_message() in response.content)
@@ -182,10 +182,10 @@ class TestInstructorDashboard(ModuleStoreTestCase, LoginEnrollmentTestCase, XssT
         response = self.client.get(self.url)
 
         # enrollment information hidden
-        self.assertNotIn('<th scope="row">Verified</th scope="row">', response.content)
-        self.assertNotIn('<th scope="row">Audit</th scope="row">', response.content)
-        self.assertNotIn('<th scope="row">Honor</th scope="row">', response.content)
-        self.assertNotIn('<th scope="row">Professional</th scope="row">', response.content)
+        self.assertNotIn('<th scope="row">Verified></th>', response.content)
+        self.assertNotIn('<th scope="row">Audit></th>', response.content)
+        self.assertNotIn('<th scope="row">Honor></th>', response.content)
+        self.assertNotIn('<th scope="row">Professional></th>', response.content)
 
         # link to dashboard shown
         expected_message = self.get_dashboard_enrollment_message()
