@@ -1,4 +1,5 @@
 <form>
+TOUCH CHANGE
 <h3 class="modal-section-title"><%= gettext('Student Visibility') %></h3>
 <div class="modal-section-content staff-lock">
     <ul class="list-fields list-input">

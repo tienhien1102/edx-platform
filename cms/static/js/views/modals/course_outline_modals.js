@@ -13,7 +13,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
 ) {
     'use strict';
     var CourseOutlineXBlockModal, SettingsXBlockModal, PublishXBlockModal, AbstractEditor, BaseDateEditor,
-        ReleaseDateEditor, DueDateEditor, GradingEditor, PublishEditor, StaffLockEditor,
+        ReleaseDateEditor, DueDateEditor, GradingEditor, PublishEditor, VisibilityEditor,
         VerificationAccessEditor, TimedExaminationPreferenceEditor, AccessEditor;
 
     CourseOutlineXBlockModal = BaseModal.extend({
@@ -590,46 +590,47 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
         }
     });
 
-    StaffLockEditor = AbstractEditor.extend({
-        templateName: 'staff-lock-editor',
-        className: 'edit-staff-lock',
-        isModelLocked: function() {
-            return this.model.get('has_explicit_staff_lock');
+    VisibilityEditor = AbstractEditor.extend({
+        templateName: 'visibility-editor',
+        className: 'edit-visibility',
+        modelVisibility: function() {
+            return null;
+            // TODO: write real logic here
         },
 
         isAncestorLocked: function() {
-            return this.model.get('ancestor_has_staff_lock');
+            return this.model.get('ancestor_locked');
         },
 
         afterRender: function () {
             AbstractEditor.prototype.afterRender.call(this);
-            this.setLock(this.isModelLocked());
+            this.setVisibility(this.modelVisibility());
         },
 
-        setLock: function(value) {
-            this.$('#staff_lock').prop('checked', value);
+        setVisibility: function(value) {
+            this.$('.visibility').prop('value', value);
         },
 
-        isLocked: function() {
-            return this.$('#staff_lock').is(':checked');
+        getVisibility: function() {
+            return this.$('.visibility').value;
         },
 
         hasChanges: function() {
-            return this.isModelLocked() !== this.isLocked();
+            return this.modelVisibility() !== this.getVisibility();
         },
 
         getRequestData: function() {
             return this.hasChanges() ? {
                 publish: 'republish',
                 metadata: {
-                    visible_to_staff_only: this.isLocked() ? true : null
+                    visiblility_level: this.getVisibility()
                     }
                 } : {};
         },
 
         getContext: function () {
             return {
-                hasExplicitStaffLock: this.isModelLocked(),
+                hasExplicitStaffLock: this.modelVisibility,
                 ancestorLocked: this.isAncestorLocked()
             };
         }
@@ -752,12 +753,12 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
             var tabs = [];
 
             if (xblockInfo.isChapter()) {
-                editors = [ReleaseDateEditor, StaffLockEditor];
+                editors = [ReleaseDateEditor, VisibilityEditor];
             } else if (xblockInfo.isSequential()) {
                 tabs.push({
                     name: 'basic',
                     displayName: gettext('Basic'),
-                    editors: [ReleaseDateEditor, GradingEditor, DueDateEditor, StaffLockEditor]
+                    editors: [ReleaseDateEditor, GradingEditor, DueDateEditor, VisibilityEditor]
                 });
 
                 if (options.enable_proctored_exams || options.enable_timed_exams) {
@@ -777,7 +778,7 @@ define(['jquery', 'backbone', 'underscore', 'gettext', 'js/views/baseview',
                     });
                 }
             } else if (xblockInfo.isVertical()) {
-                editors = [StaffLockEditor];
+                editors = [VisibilityEditor];
 
                 if (xblockInfo.hasVerifiedCheckpoints()) {
                     editors.push(VerificationAccessEditor);
