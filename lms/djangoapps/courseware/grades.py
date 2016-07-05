@@ -513,8 +513,8 @@ def _progress_summary(student, course, course_structure=None):
             unicode(course.id), anonymous_id_for_user(student, course.id)
         )
 
-    # Check for gated content
-    gated_content = gating_api.get_gated_content(course, student)
+    # # Check for gated content
+    # gated_content = gating_api.get_gated_content(course, student)
 
     chapters = []
     locations_to_weighted_scores = {}
@@ -523,8 +523,8 @@ def _progress_summary(student, course, course_structure=None):
         chapter = course_structure[chapter_key]
         sections = []
         for section_key in course_structure.get_children(chapter_key):
-            if unicode(section_key) in gated_content:
-                continue
+            # if unicode(section_key) in gated_content:
+            #     continue
 
             section = course_structure[section_key]
 

@@ -142,7 +142,7 @@ class CoursewareIndex(View):
 
             if self.chapter and self.section:
                 self._redirect_if_not_requested_section()
-                self._verify_section_not_gated()
+                # self._verify_section_not_gated()
                 self._save_positions()
                 self._prefetch_and_bind_section()
 
@@ -271,14 +271,14 @@ class CoursewareIndex(View):
                     self.chapter_url_name = exam_chapter.url_name
                     self.section_url_name = exam_section.url_name
 
-    def _verify_section_not_gated(self):
-        """
-        Verify whether the section is gated and accessible to the user.
-        """
-        gated_content = gating_api.get_gated_content(self.course, self.effective_user)
-        if gated_content:
-            if unicode(self.section.location) in gated_content:
-                raise Http404
+    # def _verify_section_not_gated(self):
+    #     """
+    #     Verify whether the section is gated and accessible to the user.
+    #     """
+    #     gated_content = gating_api.get_gated_content(self.course, self.effective_user)
+    #     if gated_content:
+    #         if unicode(self.section.location) in gated_content:
+    #             raise Http404
 
     def _get_language_preference(self):
         """

@@ -165,7 +165,7 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
         required_content = milestones_helpers.get_required_content(course, user)
 
         # Check for gated content
-        gated_content = gating_api.get_gated_content(course, user)
+        # gated_content = gating_api.get_gated_content(course, user)
 
         # The user may not actually have to complete the entrance exam, if one is required
         if not user_must_complete_entrance_exam(request, user, course):
@@ -190,8 +190,8 @@ def toc_for_course(user, request, course, active_chapter, active_section, field_
             sections = list()
             for section in chapter.get_display_items():
                 # skip the section if it is gated/hidden from the user
-                if gated_content and unicode(section.location) in gated_content:
-                    continue
+                # if gated_content and unicode(section.location) in gated_content:
+                #     continue
                 if section.hide_from_toc:
                     continue
 

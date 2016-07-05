@@ -20,6 +20,7 @@ from django.utils.timezone import UTC
 
 from opaque_keys.edx.keys import CourseKey, UsageKey
 
+from milestones import api as milestones_api
 from xblock.core import XBlock
 
 from xmodule.course_module import (
@@ -552,18 +553,35 @@ def _has_access_descriptor(user, action, descriptor, course_key=None):
         students to see modules.  If not, views should check the course, so we
         don't have to hit the enrollments table on every module load.
         """
-        response = (
-            _visible_to_nonstaff_users(descriptor)
-            and _has_group_access(descriptor, user, course_key)
-            and
-            (
-                _has_detached_class_tag(descriptor)
-                or _can_access_descriptor_with_start_date(user, descriptor, course_key)
+        has_staff_access = _has_staff_access_to_descriptor(user, descriptor, course_key)
+        # if the user has staff access, they can load the module so this code doesn't need to run
+        if not has_staff_access:
+            # only check milestones for sequentials, as gated content doesn't apply to other block types
+            if descriptor.location.block_type == 'sequential':
+                course_milestones = milestones_api.get_course_content_milestones(
+                    course_key,
+                    descriptor.location,
+                    'requires',
+                    {'id': user.id}
+                )
+            else:
+                course_milestones = []
+                
+            response = (
+                descriptor.location not in course_milestones
+                and _visible_to_nonstaff_users(descriptor)
+                and _has_group_access(descriptor, user, course_key)
+                and
+                (
+                    _has_detached_class_tag(descriptor)
+                    or _can_access_descriptor_with_start_date(user, descriptor, course_key)
+                )
             )
-        )
+        else:
+            response = True
 
         return (
-            ACCESS_GRANTED if (response or _has_staff_access_to_descriptor(user, descriptor, course_key))
+            ACCESS_GRANTED if (has_staff_access or response)
             else response
         )
 
