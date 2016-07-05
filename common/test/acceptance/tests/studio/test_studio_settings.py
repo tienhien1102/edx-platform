@@ -579,9 +579,6 @@ class StudioSubsectionSettingsA11yTest(StudioCourseTest):
         self.course_outline.a11y_audit.config.set_scope(
             include=['section.edit-settings-timed-examination']
         )
-        self.course_outline.a11y_audit.config.set_rules({
-            "ignore": []
-        })
         self.course_outline.a11y_audit.check_for_accessibility_errors()
 
 
