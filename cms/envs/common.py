@@ -603,12 +603,6 @@ PIPELINE_CSS = {
         ],
         'output_filename': 'css/studio-main-v2-rtl.css',
     },
-    'style-edx-icons': {
-        'source_filenames': [
-            'css/edx-icons.css',
-        ],
-        'output_filename': 'css/edx-icons.css',
-    },
     'style-xmodule-annotations': {
         'source_filenames': [
             'css/vendor/ova/annotator.css',
