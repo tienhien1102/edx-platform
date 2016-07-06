@@ -181,12 +181,12 @@ class @AutoEnrollmentViaCsv
     # Wrapper for the AutoEnrollmentViaCsv subsection.
     # This object handles buttons, success and failure reporting,
     # and server communication.
-    @$student_enrollment_form = @$container.find("form#student-auto-enroll-form")
-    @$enrollment_signup_button = @$container.find("[name='enrollment_signup_button']")
+    @$student_enrollment_form = @$container.find("#student-auto-enroll-form")
+    @$enrollment_signup_button = @$container.find("#submitBtn-auto_enroll_csv")
     @$students_list_file = @$container.find("input[name='students_list']")
     @$csrf_token = @$container.find("input[name='csrfmiddlewaretoken']")
     @$results = @$container.find("div.results")
-    @$browse_button = @$container.find("#browseBtn")
+    @$browse_button = @$container.find("#browseBtn-auto_enroll_csv")
     @$browse_file = @$container.find("#browseFile")
 
     @processing = false
