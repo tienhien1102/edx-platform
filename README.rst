@@ -1,5 +1,5 @@
 This is the main edX platform which consists of LMS and Studio.
-
+Version of tienhien1102
 
 Installation
 ------------
