@@ -1,7 +1,7 @@
 This is the main edX platform which consists of LMS and Studio.
 
-
-Installation
+developer: TRAN TIEN HIEN - email: tienhien110293@gmail.com - blog: www.coderdeptrai.com
+Installation - version of edx-smartkid
 ------------
 
 Please refer to the following wiki pages in our `configuration repo`_ to
